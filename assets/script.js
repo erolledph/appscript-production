@@ -640,49 +640,77 @@ async function handleCSVImport(event) {
     const file = event.target.files[0];
     if (!file) return;
     
-    if (!file.name.endsWith('.csv')) {
-        showToast('Please select a CSV file', 'error');
-        return;
-    }
+    const fileName = file.name.toLowerCase();
+    let subscribers = [];
     
     try {
         const text = await file.text();
-        const lines = text.split('\n').filter(line => line.trim());
         
-        if (lines.length < 2) {
-            showToast('CSV file appears to be empty', 'error');
-            return;
-        }
-        
-        // Parse CSV (assuming format: Name,Email)
-        const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-        const nameIndex = headers.findIndex(h => h.includes('name'));
-        const emailIndex = headers.findIndex(h => h.includes('email'));
-        
-        if (nameIndex === -1 || emailIndex === -1) {
-            showToast('CSV must contain Name and Email columns', 'error');
-            return;
-        }
-        
-        const subscribers = [];
-        for (let i = 1; i < lines.length; i++) {
-            const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
-            if (values[emailIndex] && values[nameIndex]) {
-                subscribers.push({
-                    name: values[nameIndex],
-                    email: values[emailIndex],
-                    sendWelcome: false // Don't send welcome emails during import
-                });
+        if (fileName.endsWith('.json')) {
+            // Handle JSON format (like your data structure)
+            try {
+                const jsonData = JSON.parse(text);
+                if (jsonData.data && Array.isArray(jsonData.data)) {
+                    subscribers = jsonData.data.map(item => ({
+                        name: item.name || 'Unknown',
+                        email: item.email,
+                        sendWelcome: false
+                    })).filter(sub => sub.email); // Only include items with email
+                } else if (Array.isArray(jsonData)) {
+                    subscribers = jsonData.map(item => ({
+                        name: item.name || 'Unknown',
+                        email: item.email,
+                        sendWelcome: false
+                    })).filter(sub => sub.email);
+                }
+            } catch (jsonError) {
+                showToast('Invalid JSON format', 'error');
+                return;
             }
+        } else if (fileName.endsWith('.csv')) {
+            // Handle CSV format
+            const lines = text.split('\n').filter(line => line.trim());
+            
+            if (lines.length < 2) {
+                showToast('CSV file appears to be empty', 'error');
+                return;
+            }
+            
+            // Parse CSV (assuming format: Name,Email)
+            const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+            const nameIndex = headers.findIndex(h => h.includes('name'));
+            const emailIndex = headers.findIndex(h => h.includes('email'));
+            
+            if (nameIndex === -1 || emailIndex === -1) {
+                showToast('CSV must contain Name and Email columns', 'error');
+                return;
+            }
+            
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+                if (values[emailIndex] && values[nameIndex]) {
+                    subscribers.push({
+                        name: values[nameIndex] || 'Unknown',
+                        email: values[emailIndex],
+                        sendWelcome: false
+                    });
+                }
+            }
+        } else {
+            showToast('Please select a CSV or JSON file', 'error');
+            return;
         }
         
         if (subscribers.length === 0) {
-            showToast('No valid subscribers found in CSV', 'error');
+            showToast('No valid subscribers found in file', 'error');
             return;
         }
         
-        // Show confirmation dialog
-        if (!confirm(`Found ${subscribers.length} subscribers to import. Continue?`)) {
+        // Show confirmation dialog with sample data
+        const sample = subscribers.slice(0, 3).map(s => `${s.name} (${s.email})`).join(', ');
+        const confirmMessage = `Found ${subscribers.length} subscribers to import.\n\nSample: ${sample}${subscribers.length > 3 ? '...' : ''}\n\nContinue?`;
+        
+        if (!confirm(confirmMessage)) {
             return;
         }
         
