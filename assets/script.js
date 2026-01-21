@@ -636,9 +636,90 @@ function exportCSV() {
     showToast('CSV exported successfully');
 }
 
-function goToPage(page) {
-    AppState.currentPage = page;
-    updateSubscribersTable();
+async function handleCSVImport(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    if (!file.name.endsWith('.csv')) {
+        showToast('Please select a CSV file', 'error');
+        return;
+    }
+    
+    try {
+        const text = await file.text();
+        const lines = text.split('\n').filter(line => line.trim());
+        
+        if (lines.length < 2) {
+            showToast('CSV file appears to be empty', 'error');
+            return;
+        }
+        
+        // Parse CSV (assuming format: Name,Email)
+        const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+        const nameIndex = headers.findIndex(h => h.includes('name'));
+        const emailIndex = headers.findIndex(h => h.includes('email'));
+        
+        if (nameIndex === -1 || emailIndex === -1) {
+            showToast('CSV must contain Name and Email columns', 'error');
+            return;
+        }
+        
+        const subscribers = [];
+        for (let i = 1; i < lines.length; i++) {
+            const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+            if (values[emailIndex] && values[nameIndex]) {
+                subscribers.push({
+                    name: values[nameIndex],
+                    email: values[emailIndex],
+                    sendWelcome: false // Don't send welcome emails during import
+                });
+            }
+        }
+        
+        if (subscribers.length === 0) {
+            showToast('No valid subscribers found in CSV', 'error');
+            return;
+        }
+        
+        // Show confirmation dialog
+        if (!confirm(`Found ${subscribers.length} subscribers to import. Continue?`)) {
+            return;
+        }
+        
+        // Import subscribers
+        const response = await fetch(CONFIG.SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'importSubscribers',
+                key: CONFIG.API_KEY,
+                token: AppState.sessionToken,
+                subscribers: subscribers
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showToast(result.message || 'Import completed successfully');
+            await fetchDashboardData();
+            
+            // Show detailed results if there were any failures
+            const failed = result.results ? result.results.filter(r => !r.success) : [];
+            if (failed.length > 0) {
+                console.log('Import failures:', failed);
+                showToast(`${failed.length} subscribers failed to import. Check console for details.`, 'warning');
+            }
+        } else {
+            throw new Error(result.message || 'Import failed');
+        }
+        
+    } catch (error) {
+        showToast('Import error: ' + error.message, 'error');
+    } finally {
+        // Clear the file input
+        event.target.value = '';
+    }
 }
 
 function nextPage() {

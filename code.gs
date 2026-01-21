@@ -315,6 +315,53 @@ function doPost(e) {
       return createJsonResponse({ success: true, message: "Subscriber added successfully" });
     }
 
+    // --- ACTION: IMPORT SUBSCRIBERS FROM CSV ---
+    if (data.action === "importSubscribers" && data.subscribers && Array.isArray(data.subscribers)) {
+      const results = [];
+      const currentData = sheet.getDataRange().getValues();
+      const existingEmails = currentData.slice(1).map(r => r[2] ? r[2].toString().toLowerCase() : "").filter(e => e);
+      
+      for (const subscriber of data.subscribers) {
+        if (!subscriber.email || !subscriber.name) {
+          results.push({ email: subscriber.email || 'missing', success: false, message: "Missing name or email" });
+          continue;
+        }
+        
+        const emailToFind = subscriber.email.toLowerCase();
+        if (existingEmails.includes(emailToFind)) {
+          results.push({ email: subscriber.email, success: false, message: "Email already exists" });
+          continue;
+        }
+        
+        try {
+          sheet.appendRow([
+            "ID-"+Date.now() + Math.random(), 
+            subscriber.name.trim(), 
+            subscriber.email.trim(), 
+            "active", 
+            new Date(), 
+            0, 
+            0
+          ]);
+          existingEmails.push(emailToFind);
+          
+          if (SEND_WELCOME_EMAIL === "true" && subscriber.sendWelcome !== false) {
+            sendPremiumEmail(subscriber.email, subscriber.name);
+          }
+          
+          results.push({ email: subscriber.email, success: true, message: "Imported successfully" });
+        } catch (error) {
+          results.push({ email: subscriber.email, success: false, message: "Import failed: " + error.toString() });
+        }
+      }
+      
+      return createJsonResponse({ 
+        success: true, 
+        message: `Import completed. ${results.filter(r => r.success).length} of ${results.length} subscribers imported.`,
+        results: results
+      });
+    }
+
     // --- ACTION: SEND EMAIL ---
     if (data.action === "sendEmail" && data.to && data.subject && data.body) {
       GmailApp.sendEmail(data.to, data.subject, data.body, {
