@@ -592,11 +592,55 @@ function batchDeleteSubscribers() {
     if (AppState.selectedSubscribers.size === 0) return;
     if (!confirm(`Delete ${AppState.selectedSubscribers.size} subscriber(s)?`)) return;
     
-    AppState.selectedSubscribers.forEach(email => {
-        unsubscribeUser(email);
-    });
-    AppState.selectedSubscribers.clear();
-    updateBatchActionButtons();
+    // Convert Set to Array for batch processing
+    const emailsToDelete = Array.from(AppState.selectedSubscribers);
+    let deletedCount = 0;
+    let errorCount = 0;
+    
+    // Process deletions sequentially to avoid race conditions
+    const deleteNext = (index) => {
+        if (index >= emailsToDelete.length) {
+            // All deletions processed
+            AppState.selectedSubscribers.clear();
+            updateBatchActionButtons();
+            fetchDashboardData(); // Refresh data
+            
+            // Show summary
+            if (errorCount > 0) {
+                showToast(`Deleted ${deletedCount} subscribers, ${errorCount} errors occurred`, 'warning');
+            } else {
+                showToast(`Successfully deleted ${deletedCount} subscribers`);
+            }
+            return;
+        }
+        
+        const email = emailsToDelete[index];
+        
+        // Direct API call without confirmation dialog for bulk operations
+        fetch(`${CONFIG.SCRIPT_URL}?action=unsubscribe&email=${encodeURIComponent(email)}&token=${AppState.sessionToken}&key=${CONFIG.API_KEY}`)
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    deletedCount++;
+                } else {
+                    errorCount++;
+                    console.error(`Failed to delete ${email}:`, result.message);
+                }
+                
+                // Process next email
+                deleteNext(index + 1);
+            })
+            .catch(error => {
+                errorCount++;
+                console.error(`Error deleting ${email}:`, error);
+                
+                // Process next email even if current one failed
+                deleteNext(index + 1);
+            });
+    };
+    
+    // Start batch deletion
+    deleteNext(0);
 }
 
 function setDateRange() {
@@ -715,31 +759,40 @@ async function handleCSVImport(event) {
         }
         
         // Import subscribers
-        const response = await fetch(CONFIG.SCRIPT_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                action: 'importSubscribers',
-                key: CONFIG.API_KEY,
-                token: AppState.sessionToken,
-                subscribers: subscribers
-            })
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            showToast(result.message || 'Import completed successfully');
-            await fetchDashboardData();
+        try {
+            const response = await fetch(CONFIG.SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'importSubscribers',
+                    key: CONFIG.API_KEY,
+                    token: AppState.sessionToken,
+                    subscribers: subscribers
+                })
+            });
             
-            // Show detailed results if there were any failures
-            const failed = result.results ? result.results.filter(r => !r.success) : [];
-            if (failed.length > 0) {
-                console.log('Import failures:', failed);
-                showToast(`${failed.length} subscribers failed to import. Check console for details.`, 'warning');
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
-        } else {
-            throw new Error(result.message || 'Import failed');
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showToast(result.message || 'Import completed successfully');
+                await fetchDashboardData();
+                
+                // Show detailed results if there were any failures
+                const failed = result.results ? result.results.filter(r => !r.success) : [];
+                if (failed.length > 0) {
+                    console.log('Import failures:', failed);
+                    showToast(`${failed.length} subscribers failed to import. Check console for details.`, 'warning');
+                }
+            } else {
+                throw new Error(result.message || 'Import failed');
+            }
+        } catch (fetchError) {
+            console.error('Import fetch error:', fetchError);
+            throw new Error('Failed to connect to server: ' + fetchError.message);
         }
         
     } catch (error) {

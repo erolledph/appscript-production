@@ -341,13 +341,25 @@ function doPost(e) {
       const currentData = sheet.getDataRange().getValues();
       const existingEmails = currentData.slice(1).map(r => r[2] ? r[2].toString().toLowerCase() : "").filter(e => e);
       
+      // Validate session token before processing
+      if (!data.token || !validateSession(data.token)) {
+        return createJsonResponse({ success: false, message: "Unauthorized - Invalid or expired session", requiresLogin: true });
+      }
+      
       for (const subscriber of data.subscribers) {
         if (!subscriber.email || !subscriber.name) {
           results.push({ email: subscriber.email || 'missing', success: false, message: "Missing name or email" });
           continue;
         }
         
-        const emailToFind = subscriber.email.toLowerCase();
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(subscriber.email.trim())) {
+          results.push({ email: subscriber.email, success: false, message: "Invalid email format" });
+          continue;
+        }
+        
+        const emailToFind = subscriber.email.toLowerCase().trim();
         if (existingEmails.includes(emailToFind)) {
           results.push({ email: subscriber.email, success: false, message: "Email already exists" });
           continue;
