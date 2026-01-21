@@ -5,7 +5,7 @@
 
 // Configuration
 const CONFIG = {
-    SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzB2afz3vz5ZChyTJoR8-xV7d3XrPyqrI7FzOXHmFUO5vFpCX0g0YhX2uQOMqMXH73n/exec',
+    SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxMq2RUzJugQ_ZhVZBwPk4xW9aBzG9Q8nxnAkch1Ai2CuJ9MvHdNO5Kop3zo_DQoVX9/exec',
     API_KEY: 'apple123',
     AUTO_SYNC_INTERVAL: 300000 // 5 minutes
 };
