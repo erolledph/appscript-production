@@ -616,7 +616,7 @@ appscript/                          # Root project directory
 ### **Example 1: Website Subscription Form**
 ```html
 <!-- HTML Form for Website Integration -->
-<form action="https://script.google.com/macros/s/DEPLOYMENT_ID/exec" method="GET">
+<form action="YOUR_SCRIPT_URL_HERE/exec" method="GET">
   <input type="hidden" name="action" value="subscribe">
   <input type="email" name="email" placeholder="Enter your email" required>
   <input type="text" name="name" placeholder="Your name" required>
@@ -633,17 +633,17 @@ appscript/                          # Root project directory
   <p>Check out our latest offers!</p>
   
   <!-- Trackable CTA Button -->
-  <a href="https://script.google.com/macros/s/DEPLOYMENT_ID/exec?action=click&email=${email}&redirect=https://yoursite.com/offers">
+  <a href="YOUR_SCRIPT_URL_HERE/exec?action=click&email=${email}&redirect=https://yoursite.com/offers">
     View Offers
   </a>
   
   <!-- Open Tracking Pixel -->
-  <img src="https://script.google.com/macros/s/DEPLOYMENT_ID/exec?action=track&email=${email}&ts=TIMESTAMP" 
+  <img src="YOUR_SCRIPT_URL_HERE/exec?action=track&email=${email}&ts=TIMESTAMP" 
        width="1" height="1" style="display:none">
        
   <!-- Unsubscribe Link -->
   <p style="font-size: 12px;">
-    <a href="https://script.google.com/macros/s/DEPLOYMENT_ID/exec?action=unsubscribe&email=${email}">
+    <a href="YOUR_SCRIPT_URL_HERE/exec?action=unsubscribe&email=${email}">
       Unsubscribe
     </a>
   </p>
@@ -654,7 +654,7 @@ appscript/                          # Root project directory
 ### **Example 3: JavaScript Dashboard Integration**
 ```javascript
 // Admin Dashboard JavaScript
-const API_BASE = 'https://script.google.com/macros/s/DEPLOYMENT_ID/exec';
+const API_BASE = 'YOUR_SCRIPT_URL_HERE/exec';
 let sessionToken = localStorage.getItem('adminToken');
 
 // Login Function
@@ -736,12 +736,12 @@ async function importSubscribers(csvData) {
 ### **Example 5: Simple Link Integration**
 ```html
 <!-- One-Click Subscribe Link -->
-<a href="https://script.google.com/macros/s/DEPLOYMENT_ID/exec?action=subscribe&email=user@example.com&name=Quick+Subscriber">
+<a href="YOUR_SCRIPT_URL_HERE/exec?action=subscribe&email=user@example.com&name=Quick+Subscriber">
   Subscribe to Newsletter
 </a>
 
 <!-- Quick Unsubscribe Link -->
-<a href="https://script.google.com/macros/s/DEPLOYMENT_ID/exec?action=unsubscribe&email=user@example.com">
+<a href="YOUR_SCRIPT_URL_HERE/exec?action=unsubscribe&email=user@example.com">
   Unsubscribe Instantly
 </a>
 ```
