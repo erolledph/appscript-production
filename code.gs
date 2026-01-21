@@ -181,9 +181,24 @@ function doGet(e) {
   if (params.action === "unsubscribe" && params.email) {
     // Check if this is an authenticated request (has token) or public request
     if (params.token && validateSession(params.token)) {
-      // Authenticated request - return JSON
-      const result = handlePublicAction(sheet, params.email, "", "unsubscribed", "Successfully Unsubscribed.");
-      return createJsonResponse({ success: true, message: "Successfully Unsubscribed." });
+      // Authenticated request - return JSON with actual result
+      const data = sheet.getDataRange().getValues();
+      let foundRow = -1;
+      const emailToFind = params.email.toLowerCase();
+      
+      for (let i = 1; i < data.length; i++) {
+        if (data[i][2] && data[i][2].toString().toLowerCase() === emailToFind) { 
+          foundRow = i + 1; 
+          break; 
+        }
+      }
+      
+      if (foundRow !== -1) {
+        sheet.deleteRow(foundRow);
+        return createJsonResponse({ success: true, message: "Successfully Unsubscribed." });
+      } else {
+        return createJsonResponse({ success: false, message: "Subscriber not found" });
+      }
     } else {
       // Public request - return plain text
       return handlePublicAction(sheet, params.email, "", "unsubscribed", "Successfully Unsubscribed.");
@@ -356,11 +371,6 @@ function doPost(e) {
       const results = [];
       const currentData = sheet.getDataRange().getValues();
       const existingEmails = currentData.slice(1).map(r => r[2] ? r[2].toString().toLowerCase() : "").filter(e => e);
-      
-      // Validate session token before processing
-      if (!data.token || !validateSession(data.token)) {
-        return createJsonResponse({ success: false, message: "Unauthorized - Invalid or expired session", requiresLogin: true });
-      }
       
       for (const subscriber of data.subscribers) {
         if (!subscriber.email || !subscriber.name) {
