@@ -185,7 +185,17 @@ function doGet(e) {
   // --- ACTION: VIEW ALL SUBSCRIBERS (PUBLIC - No Auth Required) ---
   if (params.action === "viewAll" && params.key === MY_SECRET_WORD) {
     const values = sheet.getDataRange().getValues();
-    if (values.length <= 1) return createJsonResponse({ data: [], stats: { total: 0 } });
+    if (values.length <= 1) return createJsonResponse({ 
+      data: [], 
+      stats: { 
+        total: 0,
+        active: 0,
+        totalOpens: 0,
+        totalClicks: 0,
+        remainingEmails: MailApp.getRemainingDailyQuota(),
+        systemStatus: SEND_WELCOME_EMAIL === "true" ? "ONLINE" : "OFFLINE"
+      } 
+    });
     
     const headers = ["id", "name", "email", "status", "date", "opens", "clicks"];
     let jsonArray = values.slice(1).map(row => {
@@ -246,7 +256,17 @@ function doGet(e) {
 
   // --- DASHBOARD DATA & STATS ENGINE ---
   const values = sheet.getDataRange().getValues();
-  if (values.length <= 1) return createJsonResponse({ data: [], stats: { total: 0 } });
+  if (values.length <= 1) return createJsonResponse({ 
+    data: [], 
+    stats: { 
+      total: 0,
+      active: 0,
+      totalOpens: 0,
+      totalClicks: 0,
+      remainingEmails: MailApp.getRemainingDailyQuota(),
+      systemStatus: SEND_WELCOME_EMAIL === "true" ? "ONLINE" : "OFFLINE"
+    } 
+  });
   
   const headers = ["id", "name", "email", "status", "date", "opens", "clicks"];
   let jsonArray = values.slice(1).map(row => {
