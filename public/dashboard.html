@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S-PRO v12.3 - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/styling.css">
+</head>
+<body>
+    <!-- TODO: LOGIN SCREEN -->
+    <div id="loginScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); display: flex; align-items: center; justify-content: center; z-index: 2000;">
+        <div style="background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 3rem; width: 90%; max-width: 400px; text-align: center;">
+            <div style="margin-bottom: 2rem;">
+                <h1 style="font-size: 2rem; font-weight: 700; color: #6366f1; margin-bottom: 0.5rem;">S-PRO v12.3</h1>
+                <p style="color: #94a3b8;">Professional Edition</p>
+            </div>
+            
+            <form id="loginForm" style="display: flex; flex-direction: column; gap: 1rem;">
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #e2e8f0;">Admin Password</label>
+                    <input type="password" id="passwordInput" placeholder="Enter admin password" style="width: 100%; padding: 0.75rem 1rem; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: #e2e8f0; font-size: 1rem;" required>
+                    <div id="loginError" style="color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem; display: none;"></div>
+                    <div id="loginAttempts" style="color: #f59e0b; font-size: 0.75rem; margin-top: 0.5rem; display: none;"></div>
+                </div>
+                
+                <button type="submit" id="loginBtn" style="padding: 0.75rem 1.5rem; background: #3b82f6; color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-size: 1rem;">
+                    Login
+                </button>
+            </form>
+            
+            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                <p style="color: #64748b; font-size: 0.875rem;">🔒 Secure Admin Dashboard</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="mainContainer" class="container" style="display: none;">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="logo">
+                <h1>S-PRO v12.3</h1>
+                <p>Professional Edition</p>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" data-section="dashboard">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v0a2 2 0 01-2 2H10a2 2 0 01-2-2v0z"></path>
+                        </svg>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="audience">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                        </svg>
+                        Audience
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="compose">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        Compose
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="threads">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                        Threads
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="api-info">
+                        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        API Info
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <div class="header">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <button class="mobile-toggle" id="mobileToggle">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <a href="../index.html" style="text-decoration: none; color: inherit; font-weight: 600; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem;">← Home</a>
+                    <h2 id="pageTitle" style="margin: 0;">Dashboard</h2>
+                </div>
+                <div class="header-actions">
+                    <div class="system-status">
+                        <div class="status-dot" id="systemStatusDot"></div>
+                        <span id="systemStatusText">Loading...</span>
+                    </div>
+                    <button class="btn btn-primary" id="syncBtn">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right: 0.5rem;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        Sync
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-value" id="totalSubscribers">0</div>
+                        <div class="stat-label">Total Subscribers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-value" id="activeSubscribers">0</div>
+                        <div class="stat-label">Active Subscribers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-value" id="totalOpens">0</div>
+                        <div class="stat-label">Total Opens</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-value" id="totalClicks">0</div>
+                        <div class="stat-label">Total Clicks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-value" id="remainingEmails">0</div>
+                        <div class="stat-label">Remaining Emails</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="quotaProgress"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Audience Section -->
+            <section id="audience" class="section">
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h3 style="font-size: 1.25rem; font-weight: 600;">Subscriber Management</h3>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn btn-secondary" onclick="exportCSV()" title="Export as CSV">📥 Export</button>
+                            <button class="btn btn-primary" id="addSubscriberBtn">Add Subscriber</button>
+                        </div>
+                    </div>
+                    
+                    <div class="search-container">
+                        <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input type="text" class="search-input" id="searchInput" placeholder="Search subscribers...">
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                        <div>
+                            <label style="display: block; font-size: 0.875rem; margin-bottom: 0.25rem; color: var(--text-secondary);">From Date</label>
+                            <input type="date" id="filterStartDate" class="form-input" style="width: 150px;" onchange="setDateRange()">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.875rem; margin-bottom: 0.25rem; color: var(--text-secondary);">To Date</label>
+                            <input type="date" id="filterEndDate" class="form-input" style="width: 150px;" onchange="setDateRange()">
+                        </div>
+                        <div style="display: flex; align-items: flex-end;">
+                            <button class="btn btn-secondary" onclick="setDateRange()" style="height: 36px;">Apply Filter</button>
+                        </div>
+                    </div>
+
+                    <div id="batchActionsContainer" style="display: none; gap: 1rem; margin-bottom: 1.5rem; align-items: center; background: rgba(59, 130, 246, 0.1); padding: 1rem; border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.3);">
+                        <span id="selectedCount" style="font-weight: 600; color: var(--accent-blue);">0</span>
+                        <span style="color: var(--text-secondary);">subscriber(s) selected</span>
+                        <button class="btn btn-danger" onclick="batchDeleteSubscribers()">Delete Selected</button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px;"><input type="checkbox" id="selectAllCheckbox"></th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Date Joined</th>
+                                    <th style="cursor: pointer; user-select: none;">Opens ↕</th>
+                                    <th style="cursor: pointer; user-select: none;">Clicks ↕</th>
+                                    <th>Click Rate %</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="subscribersTable">
+                                <tr>
+                                    <td colspan="9" style="text-align: center; padding: 2rem;">
+                                        <div class="loading"></div> Loading...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination" id="paginationContainer" style="display: none;">
+                        <button class="pagination-btn" id="prevPageBtn">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="pagination-info" id="paginationInfo">Page 1 of 1</div>
+                        <button class="pagination-btn" id="nextPageBtn">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Compose Section -->
+            <section id="compose" class="section">
+                <div class="card">
+                    <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem;">Compose Email</h3>
+                    <form id="composeForm">
+                        <div class="form-group">
+                            <label class="form-label" for="emailTo">To</label>
+                            <input type="email" class="form-input" id="emailTo" placeholder="recipient@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="emailSubject">Subject</label>
+                            <input type="text" class="form-input" id="emailSubject" placeholder="Email subject" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="senderName">Sender Name</label>
+                            <input type="text" class="form-input" id="senderName" placeholder="Your Brand Name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="emailBody">Message</label>
+                            <textarea class="form-textarea" id="emailBody" placeholder="Your message here..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right: 0.5rem;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
+                            Send Email
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Threads Section -->
+            <section id="threads" class="section">
+                <div class="card">
+                    <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem;">Gmail Conversation History</h3>
+                    <div class="form-group">
+                        <label class="form-label" for="threadEmail">Email Address</label>
+                        <div style="display: flex; gap: 1rem;">
+                            <input type="email" class="form-input" id="threadEmail" placeholder="subscriber@example.com" style="flex: 1;">
+                            <button class="btn btn-primary" id="loadThreadsBtn">Load History</button>
+                        </div>
+                    </div>
+                    <div id="threadsContainer">
+                        <div class="empty-state">
+                            <svg class="empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                            </svg>
+                            <p>Enter an email address to load conversation history</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- API Info Section -->
+            <section id="api-info" class="section">
+                <div class="card">
+                    <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem;">API Information</h3>
+                    <div style="background: rgba(15, 23, 42, 0.5); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <p style="font-family: monospace; font-size: 0.875rem; color: var(--text-secondary);">
+                            <strong>Apps Script URL:</strong><br>
+                            <span id="scriptUrl">Loading...</span>
+                        </p>
+                    </div>
+                    
+                    <h4 style="font-size: 1rem; font-weight: 600; margin: 1.5rem 0 1rem; color: var(--text-primary);">Available Endpoints:</h4>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div style="background: rgba(15, 23, 42, 0.5); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                            <h5 style="color: var(--success); font-weight: 600; margin-bottom: 0.5rem;">GET /subscribe</h5>
+                            <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Public endpoint for website forms</p>
+                            <code style="font-size: 0.75rem; color: var(--slate-light);">?action=subscribe&email=user@example.com&name=User Name</code>
+                        </div>
+                        
+                        <div style="background: rgba(15, 23, 42, 0.5); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                            <h5 style="color: var(--error); font-weight: 600; margin-bottom: 0.5rem;">GET /unsubscribe</h5>
+                            <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Public unsubscribe endpoint</p>
+                            <code style="font-size: 0.75rem; color: var(--slate-light);">?action=unsubscribe&email=user@example.com</code>
+                        </div>
+                        
+                        <div style="background: rgba(15, 23, 42, 0.5); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                            <h5 style="color: var(--accent-blue); font-weight: 600; margin-bottom: 0.5rem;">GET /track</h5>
+                            <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Email open tracking pixel</p>
+                            <code style="font-size: 0.75rem; color: var(--slate-light);">?action=track&email=user@example.com</code>
+                        </div>
+                        
+                        <div style="background: rgba(15, 23, 42, 0.5); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                            <h5 style="color: var(--teal); font-weight: 600; margin-bottom: 0.5rem;">POST /compose</h5>
+                            <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Send custom emails (requires API key)</p>
+                            <code style="font-size: 0.75rem; color: var(--slate-light);">{"method": "COMPOSE", "key": "apple123", "to": "...", "subject": "...", "body": "..."}</code>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--error); padding: 1rem; border-radius: 8px; margin-top: 1.5rem;">
+                        <h5 style="color: var(--error); font-weight: 600; margin-bottom: 0.5rem;">⚠️ Security Note</h5>
+                        <p style="font-size: 0.875rem; color: var(--text-secondary);">
+                            The master key "apple123" is required for dashboard access and private operations. 
+                            Public endpoints (subscribe/unsubscribe/track) do not require authentication.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add Subscriber Modal -->
+    <div class="modal" id="addSubscriberModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Subscriber</h3>
+                <button class="modal-close" id="closeAddModal">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <form id="addSubscriberForm">
+                <div class="form-group">
+                    <label class="form-label" for="newSubscriberName">Name</label>
+                    <input type="text" class="form-input" id="newSubscriberName" placeholder="Subscriber name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="newSubscriberEmail">Email</label>
+                    <input type="email" class="form-input" id="newSubscriberEmail" placeholder="subscriber@example.com" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Subscriber</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
+    <!-- External Scripts -->
+    <script src="../assets/script.js"></script>
+</body>
+</html>

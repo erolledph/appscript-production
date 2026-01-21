@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference | S-PRO Enterprise v12.3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #020617;
+            --accent-blue: #3b82f6;
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-bg: rgba(15, 23, 42, 0.6);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-deep);
+            color: #f8fafc;
+            scroll-behavior: smooth;
+        }
+
+        code, pre {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .nav-blur {
+            backdrop-filter: blur(16px);
+            background: rgba(2, 6, 23, 0.85);
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.05);
+            color: #60a5fa;
+        }
+
+        .sidebar-active {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            font-weight: 700;
+        }
+
+        .doc-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .api-tag {
+            font-size: 10px;
+            padding: 0.125rem 0.5rem;
+            border-radius: 0.25rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: 1px solid;
+        }
+
+        .tag-get { background: rgba(16, 185, 129, 0.1); color: #10b981; border-color: rgba(16, 185, 129, 0.2); }
+        .tag-post { background: rgba(59, 130, 246, 0.1); color: #3b82f6; border-color: rgba(59, 130, 246, 0.2); }
+        .tag-auth { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border-color: rgba(245, 158, 11, 0.2); }
+        .tag-tech { background: rgba(139, 92, 246, 0.1); color: #a78bfa; border-color: rgba(139, 92, 246, 0.2); }
+
+        pre {
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            overflow-x: auto;
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .hl-key { color: #f472b6; }
+        .hl-str { color: #34d399; }
+        .hl-num { color: #fbbf24; }
+        .hl-comment { color: #64748b; font-style: italic; }
+
+        #sidebar-overlay { display: none; }
+        #sidebar-overlay.active { display: block; }
+        .mobile-sidebar-active { transform: translateX(0) !important; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur-sm"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 nav-blur border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <button id="sidebar-toggle" class="lg:hidden text-slate-400 hover:text-white p-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                </button>
+                <a href="../index.html" class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-indigo-600 rounded flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">S</span>
+                    </div>
+                    <span class="font-bold tracking-tighter text-lg">S-PRO <span class="text-indigo-400 text-xs font-mono">v12.3 API</span></span>
+                </a>
+            </div>
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="./documentation.html" class="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-white transition-colors">Documentation</a>
+                <a href="./dashboard.html" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-xs font-bold text-white transition-all">Console</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 pt-24 pb-20 flex flex-col lg:flex-row gap-12">
+        
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 lg:w-64 transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:h-fit bg-slate-950 lg:bg-transparent border-r border-white/5 lg:border-none p-6 lg:p-0 overflow-y-auto">
+            <div class="flex items-center justify-between lg:hidden mb-8">
+                <span class="font-bold">API Sections</span>
+                <button id="sidebar-close" class="text-slate-400"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+            </div>
+            <div class="space-y-8">
+                <div>
+                    <h5 class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500 mb-4 px-4">Technical Specs</h5>
+                    <div class="flex flex-col space-y-1">
+                        <a href="#protocol" class="sidebar-item">Architecture</a>
+                        <a href="#crud-logic" class="sidebar-item">CRUD Handling</a>
+                    </div>
+                </div>
+                <div>
+                    <h5 class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500 mb-4 px-4">Core API</h5>
+                    <div class="flex flex-col space-y-1">
+                        <a href="#intro" class="sidebar-item sidebar-active">Base URL</a>
+                        <a href="#auth" class="sidebar-item">Auth Protocol</a>
+                    </div>
+                </div>
+                <div>
+                    <h5 class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500 mb-4 px-4">GET Webhooks</h5>
+                    <div class="flex flex-col space-y-1 font-mono text-xs">
+                        <a href="#webhook-track" class="sidebar-item">/track</a>
+                        <a href="#webhook-click" class="sidebar-item">/click</a>
+                        <a href="#webhook-sub" class="sidebar-item">/subscribe</a>
+                        <a href="#webhook-unsub" class="sidebar-item">/unsubscribe</a>
+                        <a href="#action-login" class="sidebar-item">/login</a>
+                        <a href="#action-logout" class="sidebar-item">/logout</a>
+                        <a href="#action-viewall" class="sidebar-item">/viewAll</a>
+                        <a href="#admin-quota" class="sidebar-item">getQuota</a>
+                        <a href="#admin-history" class="sidebar-item">getConversation</a>
+                    </div>
+                </div>
+                <div>
+                    <h5 class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500 mb-4 px-4">POST Actions</h5>
+                    <div class="flex flex-col space-y-1 font-mono text-xs">
+                        <a href="#action-compose" class="sidebar-item">sendEmail</a>
+                        <a href="#action-addsubscriber" class="sidebar-item">addSubscriber</a>
+                        <a href="#action-updatestatus" class="sidebar-item">updateStatus</a>
+                        <a href="#action-sync" class="sidebar-item">SYNC_NODE</a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- API Content -->
+        <main class="flex-1 max-w-4xl">
+            
+            <section id="intro" class="mb-16">
+                <h1 class="text-4xl font-extrabold mb-4 tracking-tight">API Reference</h1>
+                <p class="text-slate-400 text-lg mb-8 leading-relaxed">
+                    The S-PRO v12.3 API is built on Google Apps Script Web App architecture. All requests must be routed to your unique deployment endpoint.
+                </p>
+                <div class="doc-card border-indigo-500/20 bg-indigo-500/5">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-400 mb-2 block">Endpoint Base</span>
+                    <code class="text-indigo-300 break-all text-sm font-mono">https://script.google.com/macros/s/DEPLOYMENT_ID/exec</code>
+                </div>
+            </section>
+
+            <!-- Technical Specifications -->
+            <section id="protocol" class="mb-16 scroll-mt-24">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="api-tag tag-tech">Architectural Specs</span>
+                    <h2 class="text-2xl font-bold">Protocol Details</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                    <div class="bg-white/5 border border-white/10 p-4 rounded-xl">
+                        <h4 class="text-indigo-400 font-bold text-xs uppercase mb-2">CORS Support</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">Automatic Cross-Origin Resource Sharing (CORS) handling via <code>ContentService</code>. Supports cross-domain fetch requests from web browsers.</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 p-4 rounded-xl">
+                        <h4 class="text-indigo-400 font-bold text-xs uppercase mb-2">V8 Runtime</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">Optimized JavaScript V8 engine compliance for high-speed variable processing and modern ES6+ syntax.</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 p-4 rounded-xl">
+                        <h4 class="text-indigo-400 font-bold text-xs uppercase mb-2">Atomic Locks</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">Script-level mutex using <code>LockService</code> to ensure thread-safe spreadsheet writes during concurrent API hits.</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 p-4 rounded-xl">
+                        <h4 class="text-indigo-400 font-bold text-xs uppercase mb-2">Mime-Type Strategy</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">Standardized <code>JSON</code> outputs for administrative actions and <code>TEXT</code> for public webhooks.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="crud-logic" class="mb-16 scroll-mt-24">
+                <h3 class="text-xl font-bold mb-4">Full CRUD Capabilities</h3>
+                <div class="doc-card">
+                    <p class="text-sm text-slate-400 mb-6">The <code>.gs</code> master engine implements a complete CRUD lifecycle for subscriber nodes:</p>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <span class="w-16 text-[10px] font-bold text-emerald-500 uppercase">Create</span>
+                            <p class="text-xs text-slate-500">New node injection via <code>SYNC</code> method or public <code>subscribe</code> action.</p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="w-16 text-[10px] font-bold text-blue-500 uppercase">Read</span>
+                            <p class="text-xs text-slate-500">Data retrieval for the dashboard UI and Gmail History retrieval via History Engine.</p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="w-16 text-[10px] font-bold text-yellow-500 uppercase">Update</span>
+                            <p class="text-xs text-slate-500">Metric increments (Opens/Clicks) and status changes via the <code>updateMetric</code> utility.</p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="w-16 text-[10px] font-bold text-red-500 uppercase">Delete</span>
+                            <p class="text-xs text-slate-500">Physical node removal via the public <code>unsubscribe</code> webhook or Admin console actions.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Authentication -->
+            <section id="auth" class="mb-16 scroll-mt-24">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="api-tag tag-auth">Secure</span>
+                    <h2 class="text-2xl font-bold">Authentication Protocol</h2>
+                </div>
+                <div class="space-y-4 text-slate-400 text-sm leading-relaxed">
+                    <p>The API handles security based on request type:</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><b class="text-white">Public Actions (GET):</b> Parameter-based email identifiers (no key required) - subscribe, unsubscribe, track, click.</li>
+                        <li><b class="text-white">Admin Actions (POST):</b> Requires the Master Key (<code>apple123</code>) in the JSON payload + valid session token.</li>
+                        <li><b class="text-white">Session Actions (GET):</b> Requires a valid <code>token</code> generated via the login endpoint with 24-hour expiration.</li>
+                        <li><b class="text-white">Rate Limiting:</b> 5 failed login attempts triggers 15-minute account lockout.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- GET Endpoints -->
+            <section id="webhook-track" class="mb-16 scroll-mt-24">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="api-tag tag-get">GET</span>
+                    <h2 class="text-2xl font-bold font-mono">/track</h2>
+                </div>
+                <div class="doc-card">
+                    <p class="text-sm text-slate-400 mb-6 font-mono">?action=track&email={address}</p>
+                    <p class="text-sm text-slate-500 mb-4">Triggers the Pixel Engine to increment the "Opens" column for the specified subscriber ID.</p>
+                    <h4 class="text-xs font-bold text-white mb-3 uppercase tracking-widest">Case Usage: Email Pixel</h4>
+                    <pre><code><span class="hl-comment">&lt;!-- Embed in HTML Email body --&gt;</span>
+<span class="hl-key">&lt;img</span> <span class="hl-key">src</span>=<span class="hl-str">"SCRIPT_URL?action=track&email=user@domain.com"</span> <span class="hl-key">width</span>=<span class="hl-str">"1"</span> <span class="hl-key">height</span>=<span class="highlight-string">"1"</span> <span class="hl-key">/&gt;</span></code></pre>
+                </div>
+            </section>
+
+            <section id="webhook-click" class="mb-16 scroll-mt-24">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="api-tag tag-get">GET</span>
+                    <h2 class="text-2xl font-bold font-mono">/click</h2>
+                </div>
+                <div class="doc-card">
+                    <p class="text-sm text-slate-400 mb-6 font-mono">?action=click&email={address}&redirect={url}</p>
+                    <p class="text-sm text-slate-500 mb-4">Tracks CTA clicks and increments the "Clicks" column. Supports automatic redirect to target URL after tracking.</p>
+                    <h4 class="text-xs font-bold text-white mb-3 uppercase tracking-widest">Case Usage: CTA Button Link</h4>
+                    <pre><code><span class="hl-comment">&lt;!-- Trackable CTA link in email --&gt;</span>
+<span class="hl-key">&lt;a</span> <span class="hl-key">href</span>=<span class="hl-str">"SCRIPT_URL?action=click&email=user@domain.com&redirect=https://example.com"</span>&gt;
+  Click Here
+<span class="hl-key">&lt;/a&gt;</span></code></pre>
+                </div>
+            </section>
+
+            <section id="webhook-unsub" class="mb-16 scroll-mt-24">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="api-tag tag-get">GET</span>
+                    <h2 class="text-2xl font-bold font-mono">/unsubscribe</h2>
+                </div>
+                <div class="doc-card">
+                    <p class="text-sm text-slate-400 mb-6 font-mono">?action=unsubscribe&email={address}</p>
+                    <p class="text-sm text-slate-500 mb-4">Removes subscriber from the database. This action permanently deletes the subscriber row from the "Subscribers" sheet.</p>
+                    <h4 class="text-xs font-bold text-white mb-3 uppercase tracking-widest">Case Usage: Unsubscribe Link</h4>
+                    <pre><code><span class="hl-comment">&lt;!-- Unsubscribe link in email footer --&gt;</span>
+<span class="hl-key">&lt;a</span> <span class="hl-key">href</span>=<span class="hl-str">"SCRIPT_URL?action=unsubscribe&email=user@domain.com"</span>&gt;
+  Unsubscribe
+<span class="hl-key">&lt;/a&gt;</span></code></pre>
+                </div>
+            </section>
+
+            <section id="webhook-sub" class="mb-16 scroll-mt-24">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="api-tag tag-get">GET</span>
+                    <h2 class="text-2xl font-bold font-mono">/subscribe</h2>
+                </div>
+                <div class="doc-card">
+                    <p class="text-sm text-slate-400 mb-6 font-mono">?action=subscribe&email={address}&name={name}</p>
+                    <p class="text-sm text-slate-500 mb-4">Automated node registration. This action validates if the node exists, appends to the "Subscribers" sheet, and dispatches the Welcome Email if <code>SEND_WELCOME_EMAIL</code> is enabled.</p>
+                    <h4 class="text-xs font-bold text-white mb-3 uppercase tracking-widest">Case Usage: HTML Form Webhook</h4>
+                    <pre><code><span class="hl-comment">// Direct link usage</span>
+&lt;a href=<span class="hl-str">"SCRIPT_URL?action=subscribe&email=lead@site.com&name=John Doe"</span>&gt;One-Click Subscribe&lt;/a&gt;</code></pre>
+                </div>
+            </section>
+
+            <!-- Authentication Endpoints -->
+            <section id="action-login" class="mb-16 scroll-mt-24">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="api-tag tag-get">GET</span>
+                    <h2 class="text-2xl font-bold font-mono">/login</h2>
+                </div>
+                <div class="doc-card">
+                    <p class="text-sm text-slate-400 mb-6 font-mono">?action=login&password={password}</p>
+                    <p class="text-sm text-slate-500 mb-4">Creates admin session with UUID token. Includes rate limiting (5 attempts max, 15-minute lockout) and 24-hour token expiration.</p>
+                    <h4 class="text-xs font-bold text-white mb-3 uppercase tracking-widest">Response Object</h4>
+                    <pre><code>{
+  <span class="hl-key">"success"</span>: <span class="hl-str">true</span>,
+  <span class="hl-key">"message"</span>: <span class="hl-str">"Login successful"</span>,
+  <span class="hl-key">"token"</span>: <span class="hl-str">"550e8400-e29b-41d4-a716-446655440000"</span>,
+  <span class="hl-key">"expiresAt"</span>: <span class="hl-num">1705864800000</span>
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="action-logout" class="mb-16 scroll-mt-24">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="api-tag tag-get">GET</span>
+                    <h2 class="text-2xl font-bold font-mono">/logout</h2>
+                </div>
+                <div class="doc-card">
+                    <p class="text-sm text-slate-400 mb-6 font-mono">?action=logout&token={session_token}</p>
+                    <p class="text-sm text-slate-500 mb-4">Terminates admin session by removing token from cache storage.</p>
+                    <h4 class="text-xs font-bold text-white mb-3 uppercase tracking-widest">Response Object</h4>
+                    <pre><code>{
+  <span class="hl-key">"success"</span>: <span class="hl-str">true</span>,
+  <span class="hl-key">"message"</span>: <span class="hl-str">"Logged out successfully"</span>
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="action-viewall" class="mb-16 scroll-mt-24">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="api-tag tag-get">GET</span>
+                    <h2 class="text-2xl font-bold font-mono">/viewAll</h2>
+                </div>
+                <div class="doc-card">
+                    <p class="text-sm text-slate-400 mb-6 font-mono">?action=viewAll&key=apple123</p>
+                    <p class="text-sm text-slate-500 mb-4">Returns complete subscriber list with statistics. Requires master key for authentication. No session token required.</p>
+                    <h4 class="text-xs font-bold text-white mb-3 uppercase tracking-widest">Response Object</h4>
+                    <pre><code>{
+  <span class="hl-key">"data"</span>: [...],
+  <span class="hl-key">"stats"</span>: {
+    <span class="hl-key">"total"</span>: <span class="hl-num">150</span>,
+    <span class="hl-key">"active"</span>: <span class="hl-num">142</span>,
+    <span class="hl-key">"totalOpens"</span>: <span class="hl-num">450</span>,
+    <span class="hl-key">"totalClicks"</span>: <span class="hl-num">89</span>,
+    <span class="hl-key">"remainingEmails"</span>: <span class="hl-num">450</span>,
+    <span class="hl-key">"systemStatus"</span>: <span class="hl-str">"ONLINE"</span>
+  }
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- POST Endpoints -->
+            <section id="action-compose" class="mb-16 scroll-mt-24">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="api-tag tag-post">POST</span>
+                    <h2 class="text-2xl font-bold font-mono">sendEmail</h2>
+                </div>
+                <div class="doc-card">
+                    <p class="text-sm text-slate-400 mb-6">Dispatches professional HTML emails through the Gmail Hub. Requires both master key and valid session token.</p>
+                    <h4 class="text-xs font-bold text-white mb-3 uppercase tracking-widest">Request Payload (JSON)</h4>
+                    <pre><code>{
+  <span class="hl-key">"key"</span>: <span class="hl-str">"apple123"</span>,
+  <span class="hl-key">"token"</span>: <span class="hl-str">"SESSION_TOKEN_UUID"</span>,
+  <span class="hl-key">"action"</span>: <span class="hl-str">"sendEmail"</span>,
+  <span class="hl-key">"to"</span>: <span class="hl-str">"recipient@example.com"</span>,
+  <span class="hl-key">"subject"</span>: <span class="hl-str">"Order Confirmation"</span>,
+  <span class="hl-key">"body"</span>: <span class="hl-str">"&lt;h1&gt;Hello World&lt;/h1&gt;"</span>,
+  <span class="hl-key">"senderName"</span>: <span class="hl-str">"S-PRO Support"</span>
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="action-addsubscriber" class="mb-16 scroll-mt-24">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="api-tag tag-post">POST</span>
+                    <h2 class="text-2xl font-bold font-mono">addSubscriber</h2>
+                </div>
+                <div class="doc-card">
+                    <p class="text-sm text-slate-400 mb-6">Adds new subscriber to database. Requires both master key and valid session token. Prevents duplicate emails.</p>
+                    <h4 class="text-xs font-bold text-white mb-3 uppercase tracking-widest">Request Payload (JSON)</h4>
+                    <pre><code>{
+  <span class="hl-key">"key"</span>: <span class="hl-str">"apple123"</span>,
+  <span class="hl-key">"token"</span>: <span class="hl-str">"SESSION_TOKEN_UUID"</span>,
+  <span class="hl-key">"action"</span>: <span class="hl-str">"addSubscriber"</span>,
+  <span class="hl-key">"email"</span>: <span class="hl-str">"user_452@gmail.com"</span>,
+  <span class="hl-key">"name"</span>: <span class="hl-str">"John Doe"</span>
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="action-updatestatus" class="mb-16 scroll-mt-24">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="api-tag tag-post">POST</span>
+                    <h2 class="text-2xl font-bold font-mono">updateStatus</h2>
+                </div>
+                <div class="doc-card">
+                    <p class="text-sm text-slate-400 mb-6">Updates subscriber status (active/unsubscribed). Requires both master key and valid session token.</p>
+                    <h4 class="text-xs font-bold text-white mb-3 uppercase tracking-widest">Request Payload (JSON)</h4>
+                    <pre><code>{
+  <span class="hl-key">"key"</span>: <span class="hl-str">"apple123"</span>,
+  <span class="hl-key">"token"</span>: <span class="hl-str">"SESSION_TOKEN_UUID"</span>,
+  <span class="hl-key">"action"</span>: <span class="hl-str">"updateStatus"</span>,
+  <span class="hl-key">"email"</span>: <span class="hl-str">"user@example.com"</span>,
+  <span class="hl-key">"status"</span>: <span class="hl-str">"unsubscribed"</span>
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="action-sync" class="mb-16 scroll-mt-24">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="api-tag tag-post">POST</span>
+                    <h2 class="text-2xl font-bold font-mono">SYNC_NODE (Legacy)</h2>
+                </div>
+                <div class="doc-card">
+                    <p class="text-sm text-slate-400 mb-6">Legacy manual subscriber injection. This method is protected by the <code>LockService</code> concurrency lock (20s) to ensure data integrity during mass imports.</p>
+                    <h4 class="text-xs font-bold text-white mb-3 uppercase tracking-widest">Node Injection Schema</h4>
+                    <pre><code>{
+  <span class="hl-key">"key"</span>: <span class="hl-str">"apple123"</span>,
+  <span class="hl-key">"token"</span>: <span class="hl-str">"SESSION_TOKEN_UUID"</span>,
+  <span class="hl-key">"email"</span>: <span class="hl-str">"user_452@gmail.com"</span>,
+  <span class="hl-key">"name"</span>: <span class="hl-str">"John Doe"</span>
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- Admin Logic -->
+            <section id="admin-quota" class="mb-16 scroll-mt-24">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="api-tag tag-get">GET</span>
+                    <h2 class="text-2xl font-bold font-mono">getQuota</h2>
+                </div>
+                <div class="doc-card">
+                    <p class="text-sm text-slate-400 mb-6">Monitors the <code>MailApp.getRemainingDailyQuota()</code> sensor. Critical for scaling outbound campaigns.</p>
+                    <p class="text-xs font-bold text-white mb-3 uppercase tracking-widest">Response Object</p>
+                    <pre><code>{ <span class="hl-key">"remaining"</span>: <span class="hl-num">1495</span> }</code></pre>
+                </div>
+            </section>
+
+            <section id="admin-history" class="mb-20 scroll-mt-24">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="api-tag tag-get">GET</span>
+                    <h2 class="text-2xl font-bold font-mono">getConversation</h2>
+                </div>
+                <div class="doc-card">
+                    <p class="text-sm text-slate-400 mb-6">Searches the Gmail Hub History for threads associated with a specific email node. Limited to the most recent 15 messages.</p>
+                    <p class="text-xs font-bold text-white mb-3 uppercase tracking-widest">Query Parameters</p>
+                    <ul class="text-xs font-mono text-indigo-400 mb-4 space-y-1">
+                        <li>?action=getConversation</li>
+                        <li>&token=SESSION_TOKEN_UUID</li>
+                        <li>&email=target@mail.com</li>
+                    </ul>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Technical Footer -->
+    <footer class="border-t border-white/5 py-16 px-6 bg-slate-950/50">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <h4 class="font-bold text-white mb-2">Enterprise Master v12.3</h4>
+                <p class="text-slate-500 text-sm">Centralized routing for professional subscriber lifecycles. Integrated with Google V8 Runtime.</p>
+            </div>
+            <div class="flex md:justify-end gap-8 text-xs font-bold uppercase tracking-widest text-slate-600">
+                <a href="#" class="hover:text-white transition-colors">V8 Compliance</a>
+                <a href="#" class="hover:text-white transition-colors">Lock Protocol</a>
+                <a href="#" class="hover:text-white transition-colors">Quota API</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Sidebar Mobile Logic
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebarClose = document.getElementById('sidebar-close');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('mobile-sidebar-active');
+            sidebarOverlay.classList.toggle('active');
+            document.body.classList.toggle('overflow-hidden');
+        }
+
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarClose.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
+
+        // Sidebar active link on scroll
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.sidebar-item');
+
+        window.addEventListener('scroll', () => {
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('sidebar-active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('sidebar-active');
+                }
+            });
+        });
+
+        // Close mobile sidebar on click
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 1024) toggleSidebar();
+            });
+        });
+    </script>
+</body>
+</html>

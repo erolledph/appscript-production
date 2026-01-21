@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S-PRO Documentation | Enterprise v12.3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #020617;
+            --accent-blue: #3b82f6;
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-bg: rgba(15, 23, 42, 0.6);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-deep);
+            color: #f8fafc;
+            scroll-behavior: smooth;
+        }
+
+        code, pre {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .nav-blur {
+            backdrop-filter: blur(16px);
+            background: rgba(2, 6, 23, 0.85);
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.05);
+            color: #60a5fa;
+        }
+
+        .sidebar-active {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            font-weight: 700;
+        }
+
+        .doc-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .api-tag {
+            font-size: 10px;
+            padding: 0.125rem 0.5rem;
+            border-radius: 0.25rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: 1px solid;
+        }
+
+        .tag-get { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
+        .tag-post { background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); }
+
+        pre {
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            overflow-x: auto;
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .highlight-key { color: #f472b6; }
+        .highlight-val { color: #34d399; }
+        .highlight-func { color: #60a5fa; }
+        .highlight-comment { color: #64748b; font-style: italic; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+
+        /* Sidebar Overlay for Mobile */
+        #sidebar-overlay {
+            display: none;
+        }
+        #sidebar-overlay.active {
+            display: block;
+        }
+        
+        .mobile-sidebar-active {
+            transform: translateX(0) !important;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Sidebar Overlay (Mobile) -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur-sm"></div>
+
+    <!-- Header Navigation -->
+    <nav class="fixed top-0 w-full z-50 nav-blur border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <!-- Hamburger Menu Button -->
+                <button id="sidebar-toggle" class="lg:hidden text-slate-400 hover:text-white p-2 -ml-2 transition-colors" aria-label="Toggle navigation">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <a href="../index.html" class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.168 0.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332 0.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.168 0.477-4.5 1.253" />
+                        </svg>
+                    </div>
+                    <span class="font-bold tracking-tighter text-lg">S-PRO <span class="text-blue-500 font-mono text-xs uppercase">v12.3 Docs</span></span>
+                </a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="/index.html" class="hidden sm:inline-block text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-white transition-colors">Home</a>
+                <a href="/dashboard.html" class="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-xs font-bold text-white transition-all">Console</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 pt-24 pb-20 flex flex-col lg:flex-row gap-12">
+        
+        <!-- Sticky Sidebar -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 lg:w-64 transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:h-fit lg:z-auto bg-slate-950 lg:bg-transparent border-r border-white/5 lg:border-none p-6 lg:p-0 space-y-8 overflow-y-auto lg:overflow-visible">
+            <div class="flex items-center justify-between lg:hidden mb-6">
+                <span class="font-bold text-lg">Navigation</span>
+                <button id="sidebar-close" class="text-slate-400 hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="space-y-6">
+                <div>
+                    <h5 class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500 mb-4 px-4">Core Concepts</h5>
+                    <div class="flex flex-col space-y-1">
+                        <a href="#overview" class="sidebar-item sidebar-active">Introduction</a>
+                        <a href="#implementation" class="sidebar-item">Client Implementation</a>
+                        <a href="#security" class="sidebar-item">Security Layers</a>
+                    </div>
+                </div>
+                <div>
+                    <h5 class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500 mb-4 px-4">Endpoints (GET)</h5>
+                    <div class="flex flex-col space-y-1 font-mono text-xs">
+                        <a href="#action-track" class="sidebar-item">?action=track</a>
+                        <a href="#action-click" class="sidebar-item">?action=click</a>
+                        <a href="#action-subscribe" class="sidebar-item">?action=subscribe</a>
+                        <a href="#action-getconv" class="sidebar-item">?action=getConversation</a>
+                    </div>
+                </div>
+                <div>
+                    <h5 class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-500 mb-4 px-4">Methods (POST)</h5>
+                    <div class="flex flex-col space-y-1 font-mono text-xs">
+                        <a href="#method-compose" class="sidebar-item">method: COMPOSE</a>
+                        <a href="#method-sync" class="sidebar-item">method: SYNC</a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Document Main -->
+        <main class="flex-1 max-w-4xl">
+            
+            <!-- Intro -->
+            <section id="overview" class="mb-16">
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">Technical Reference</h1>
+                <p class="text-lg text-slate-400 leading-relaxed mb-8">
+                    S-PRO Enterprise Master (v12.3) is an API-driven subscriber lifecycle engine. It utilizes the Google Apps Script V8 runtime to bridge high-volume webhooks with high-deliverability Gmail infrastructure.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="doc-card !mb-0 p-4 border-blue-500/20 bg-blue-500/5">
+                        <span class="block text-blue-500 text-sm font-bold uppercase mb-1 font-mono">Pixel Engine</span>
+                        <p class="text-xs text-slate-500">1x1 Invisible Tracking Image Integration.</p>
+                    </div>
+                    <div class="doc-card !mb-0 p-4 border-emerald-500/20 bg-emerald-500/5">
+                        <span class="block text-emerald-500 text-sm font-bold uppercase mb-1 font-mono">Concurrency</span>
+                        <p class="text-xs text-slate-500">20s Lock Wait to prevent data corruption.</p>
+                    </div>
+                    <div class="doc-card !mb-0 p-4 border-purple-500/20 bg-purple-500/5">
+                        <span class="block text-purple-500 text-sm font-bold uppercase mb-1 font-mono">Gmail Hub</span>
+                        <p class="text-xs text-slate-500">HTML-ready professional composition.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Implementation Section -->
+            <section id="implementation" class="mb-16 scroll-mt-24">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                    </svg>
+                    Client-Side Setup
+                </h2>
+                <div class="doc-card">
+                    <p class="text-slate-400 text-sm mb-6">
+                        To interface with the S-PRO engine from your front-end or external services, use the following configuration structure.
+                    </p>
+                    <div class="relative group">
+                        <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl blur opacity-10 group-hover:opacity-20 transition duration-1000"></div>
+                        <pre class="relative"><code><span class="highlight-func">const</span> CONFIG = {
+    <span class="highlight-key">SCRIPT_URL</span>: <span class="highlight-string">'https://yourappscriptlinl/exec'</span>,
+    <span class="highlight-key">API_KEY</span>: <span class="highlight-string">'yourprivatekey'</span>
+};</code></pre>
+                    </div>
+                    <div class="mt-6 flex items-start gap-3 bg-blue-500/10 border border-blue-500/20 p-4 rounded-xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-400 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p class="text-xs text-blue-200/70 leading-relaxed">
+                            Ensure the <code>SCRIPT_URL</code> matches your deployed Google Apps Script web app endpoint. The <code>API_KEY</code> must match the <code>MY_SECRET_WORD</code> defined in your script.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Security Section -->
+            <section id="security" class="mb-16 scroll-mt-24">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                    Security Protocol
+                </h2>
+                <div class="doc-card">
+                    <h3 class="font-bold text-white mb-4">Master Authentication</h3>
+                    <p class="text-slate-400 text-sm mb-6">
+                        Administrative access and write operations (POST) are protected by a static secret.
+                    </p>
+                    <pre><code><span class="highlight-comment">// Security Definition</span>
+<span class="highlight-func">const</span> MY_SECRET_WORD = <span class="highlight-val">"yourprivatekey"</span>;</code></pre>
+                    <div class="mt-6 space-y-4">
+                        <div class="flex items-start gap-4">
+                            <div class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 shrink-0 shadow-[0_0_8px_rgba(59,130,246,0.6)]"></div>
+                            <div>
+                                <span class="block font-bold text-sm text-white">Brute Force Mitigation</span>
+                                <span class="text-xs text-slate-500">Automatic lockout after 5 failed attempts for 15 minutes.</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 shrink-0 shadow-[0_0_8px_rgba(59,130,246,0.6)]"></div>
+                            <div>
+                                <span class="block font-bold text-sm text-white">Cache Sessions</span>
+                                <span class="text-xs text-slate-500">Tokens are managed via CacheService with a strict 24-hour TTL.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- API Reference Table -->
+            <section id="action-track" class="mb-16 scroll-mt-24">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="api-tag tag-get">GET</span>
+                    <h2 class="text-2xl font-bold">Public Trackers</h2>
+                </div>
+                
+                <div class="overflow-x-auto border border-white/5 rounded-xl mb-8">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-white/5 text-slate-400 uppercase text-[10px] font-bold tracking-widest">
+                            <tr>
+                                <th class="px-6 py-4">Action</th>
+                                <th class="px-6 py-4">Required Params</th>
+                                <th class="px-6 py-4">Effect</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5 text-slate-300">
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-blue-400">track</td>
+                                <td class="px-6 py-4 font-mono text-xs text-slate-500">email</td>
+                                <td class="px-6 py-4">Increments 'Opens' metric.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-blue-400">click</td>
+                                <td class="px-6 py-4 font-mono text-xs text-slate-500">email, redirect</td>
+                                <td class="px-6 py-4">Increments 'Clicks' & redirects user.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-mono text-blue-400">subscribe</td>
+                                <td class="px-6 py-4 font-mono text-xs text-slate-500">email, name</td>
+                                <td class="px-6 py-4">Registers node & sends welcome mail.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="doc-card border-l-4 border-l-blue-600 bg-blue-500/5">
+                    <h4 class="font-bold text-sm text-white mb-2 italic">Tracking Image Implementation</h4>
+                    <p class="text-xs text-slate-500 mb-4 font-mono">Include this inside your HTML email body:</p>
+                    <pre><code><span class="highlight-val">&lt;img</span> <span class="highlight-key">src</span>=<span class="highlight-string">"WEB_APP_URL?action=track&email=user@example.com"</span> <span class="highlight-key">width</span>=<span class="highlight-string">"1"</span> <span class="highlight-key">height</span>=<span class="highlight-string">"1"</span> <span class="highlight-val">/&gt;</span></code></pre>
+                </div>
+            </section>
+
+            <!-- doPost Section -->
+            <section id="method-compose" class="mb-16 scroll-mt-24">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="api-tag tag-post">POST</span>
+                    <h2 class="text-2xl font-bold">Administrative Hub</h2>
+                </div>
+                <p class="text-slate-400 text-sm mb-6 leading-relaxed">
+                    POST requests require a JSON payload. Security is verified via <code>data.key</code>.
+                </p>
+
+                <div class="space-y-8">
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-500 mb-3 uppercase tracking-widest">Method: COMPOSE</h4>
+                        <p class="text-xs text-slate-500 mb-4">Dispatches high-fidelity emails through the Gmail Hub API.</p>
+                        <pre><code>{
+  <span class="highlight-key">"key"</span>: <span class="highlight-string">"yourprivatekey"</span>,
+  <span class="highlight-key">"method"</span>: <span class="highlight-string">"COMPOSE"</span>,
+  <span class="highlight-key">"to"</span>: <span class="highlight-string">"target@domain.com"</span>,
+  <span class="highlight-key">"subject"</span>: <span class="highlight-string">"Node Update"</span>,
+  <span class="highlight-key">"body"</span>: <span class="highlight-string">"&lt;p&gt;Rich HTML Body&lt;/p&gt;"</span>
+}</code></pre>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-500 mb-3 uppercase tracking-widest">Method: SYNC</h4>
+                        <p class="text-xs text-slate-500 mb-4">Manually synchronizes a subscriber node into the database.</p>
+                        <pre><code>{
+  <span class="highlight-key">"key"</span>: <span class="highlight-string">"yourprivatekey"</span>,
+  <span class="highlight-key">"email"</span>: <span class="highlight-string">"newnode@domain.com"</span>,
+  <span class="highlight-key">"name"</span>: <span class="highlight-string">"Developer"</span>
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Concurrency Section -->
+            <section id="concurrency" class="mb-20 scroll-mt-24">
+                <h2 class="text-2xl font-bold mb-6">Data Integrity</h2>
+                <div class="doc-card border-none bg-orange-500/5 ring-1 ring-orange-500/20">
+                    <div class="flex gap-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-orange-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                        <div>
+                            <h4 class="text-xs font-bold text-orange-400 mb-2 uppercase tracking-widest">Lock Protocol</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                S-PRO implements <code>LockService.getScriptLock()</code> with a 20s threshold. All write operations are queued to prevent spreadsheet race conditions during high API traffic.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 py-12 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">
+                S-PRO Enterprise // System Build: 12.3.0
+            </div>
+            <div class="flex space-x-6">
+                <a href="#" class="text-xs text-slate-400 hover:text-white transition-colors">Endpoint Health</a>
+                <a href="#" class="text-xs text-slate-400 hover:text-white transition-colors">Support Hub</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Sidebar Mobile Toggle
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebarClose = document.getElementById('sidebar-close');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+        function openSidebar() {
+            sidebar.classList.add('mobile-sidebar-active');
+            sidebarOverlay.classList.add('active');
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('mobile-sidebar-active');
+            sidebarOverlay.classList.remove('active');
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        sidebarToggle.addEventListener('click', openSidebar);
+        sidebarClose.addEventListener('click', closeSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+
+        // Update Active Sidebar link on scroll
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.sidebar-item');
+
+        window.addEventListener('scroll', () => {
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('sidebar-active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('sidebar-active');
+                }
+            });
+        });
+
+        // Close sidebar when a link is clicked (mobile)
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 1024) {
+                    closeSidebar();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
