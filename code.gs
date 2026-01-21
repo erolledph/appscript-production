@@ -179,7 +179,15 @@ function doGet(e) {
   }
   
   if (params.action === "unsubscribe" && params.email) {
-    return handlePublicAction(sheet, params.email, "", "unsubscribed", "Successfully Unsubscribed.");
+    // Check if this is an authenticated request (has token) or public request
+    if (params.token && validateSession(params.token)) {
+      // Authenticated request - return JSON
+      const result = handlePublicAction(sheet, params.email, "", "unsubscribed", "Successfully Unsubscribed.");
+      return createJsonResponse({ success: true, message: "Successfully Unsubscribed." });
+    } else {
+      // Public request - return plain text
+      return handlePublicAction(sheet, params.email, "", "unsubscribed", "Successfully Unsubscribed.");
+    }
   }
 
   // --- ACTION: VIEW ALL SUBSCRIBERS (PUBLIC - No Auth Required) ---
@@ -296,6 +304,14 @@ function doGet(e) {
  * Main POST Request Handler
  */
 function doPost(e) {
+  // Handle CORS preflight requests
+  if (e && e.parameters && e.parameters.method === 'OPTIONS') {
+    return ContentService.createTextOutput('')
+      .setHeader('Access-Control-Allow-Origin', '*')
+      .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+      .setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  }
+
   const lock = LockService.getScriptLock();
   try {
     lock.waitLock(20000); 
@@ -557,10 +573,14 @@ function initializeSheet(ss) {
 }
 
 /**
- * Standardized JSON output utility.
+ * Standardized JSON output utility with CORS headers.
  */
 function createJsonResponse(output) {
-  return ContentService.createTextOutput(JSON.stringify(output)).setMimeType(ContentService.MimeType.JSON);
+  return ContentService.createTextOutput(JSON.stringify(output))
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeader('Access-Control-Allow-Origin', '*')
+    .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    .setHeader('Access-Control-Allow-Headers', 'Content-Type');
 }
 
 /**
