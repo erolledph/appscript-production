@@ -217,7 +217,10 @@ async function fetchDashboardData() {
         setLoading(true);
         
         // Corrected API call with action parameter
-        const response = await fetch(`${CONFIG.SCRIPT_URL}?action=getDashboard&key=${CONFIG.API_KEY}&token=${AppState.sessionToken}`);
+        const response = await fetch(`${CONFIG.SCRIPT_URL}?action=getDashboard&key=${CONFIG.API_KEY}&token=${AppState.sessionToken}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
         const data = await response.json();
         
         if (data.requiresLogin) {
@@ -775,21 +778,21 @@ async function handleCSVImport(event) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
             
-            const result = await response.json();
+            const data = await response.json();
+        
+        if (data.success) {
+            showToast(data.message || 'Import completed successfully');
+            await fetchDashboardData();
             
-            if (result.success) {
-                showToast(result.message || 'Import completed successfully');
-                await fetchDashboardData();
-                
-                // Show detailed results if there were any failures
-                const failed = result.results ? result.results.filter(r => !r.success) : [];
-                if (failed.length > 0) {
-                    console.log('Import failures:', failed);
-                    showToast(`${failed.length} subscribers failed to import. Check console for details.`, 'warning');
-                }
-            } else {
-                throw new Error(result.message || 'Import failed');
+            // Show detailed results if there were any failures
+            const failed = data.results ? data.results.filter(r => !r.success) : [];
+            if (failed.length > 0) {
+                console.log('Import failures:', failed);
+                showToast(`${failed.length} subscribers failed to import. Check console for details.`, 'warning');
             }
+        } else {
+            throw new Error(data.message || 'Import failed');
+        }
         } catch (fetchError) {
             console.error('Import fetch error:', fetchError);
             throw new Error('Failed to connect to server: ' + fetchError.message);
